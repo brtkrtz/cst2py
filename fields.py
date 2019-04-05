@@ -227,6 +227,48 @@ def save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y
             f.create_dataset('yGrad', data=y_grads[i])
 
 
+def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version=2019):
+    if not os.path.exists(hd5BasePath):
+        os.mkdir(hd5BasePath)
+
+    hd5path = os.path.join(hd5BasePath, sProjectName[:-4])
+    if not os.path.exists(hd5path):
+        os.mkdir(hd5path)
+    else:
+        if os.listdir(hd5path):  # returns True if there are files in the directory
+            # print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
+            return 1
+
+    efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
+                        load_fields(CST_version, sProjectPath, sProjectName, freqScale)
+    save_hd5_3d(hd5path, efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs)
+    return 0
+
+
+def all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5', CST_version=2019):
+    project_names = []
+    for file in os.listdir(sProjectPath):
+        if file.endswith(".cst"):
+            project_names.append(file)
+    print(project_names)
+
+    hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
+    if not os.path.exists(hd5BasePath):
+        os.mkdir(hd5BasePath)
+
+    for sProjectName in project_names:
+        print("\n\n\n\n")
+        print("#####################################")
+        print("####", sProjectName)
+        print("#####################################")
+        t = time.time()
+        retval = project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version)
+        if retval ==1:
+            print('hd5-files already exist!')
+        elapsed = numpy.round(time.time() - t)
+        print('elapsed time: '+str(elapsed))
+
+
 def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version=2019):
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
@@ -271,13 +313,13 @@ def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', 
 
 
 if __name__ == "__main__":
-
     CST_version = 2019
     sProjectPath = os.path.abspath('.') + r"\\cstdemo\\"
     freqScale = 1e9
     x0 = 0
     y0 = 0
     all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, 'hd5', CST_version)
+    all_projects_to_3d_files(sProjectPath, freqScale, 'hd5_3d', CST_version)
 
 
 
