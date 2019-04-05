@@ -22,7 +22,8 @@ import platform
 import h5py
 import numpy
 import re
-
+import time
+import datetime
 
 def _get_CST_InstallPath(CST_version):
     wr_handle = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
@@ -200,7 +201,7 @@ def slice_1d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, x0, y
 
 
 ####
-def save_hd5_3d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs): 
+def save_hd5_3d(hd5path, efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs): 
     for i, sTreePath in enumerate(efield_names + hfield_names):
         with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+'.hdf5'),'w') as f:
             print(f)
@@ -212,10 +213,9 @@ def save_hd5_3d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, fi
             f.create_dataset('field3d', data=fields3d[i])
 
 
-####
-def save_hd5_1d(efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, field_names, freq_names, freqs, x0, y0):  
-    for i, sTreePath in enumerate(efield_names + hfield_names):
-        with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+' x0='+str(x0/1e-3)+' y0='+str(y0/1e-3)+'.hdf5'),'w') as f:
+def save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, field_names, freq_names, freqs, x0, y0):  
+    for i, sTreePath in enumerate(efield_names + hfield_names):#f"{(x0/1e-3):.3f}".rstrip('0').rstrip('.')    str(y0/1e-3)
+        with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+' x0='+f"{(x0/1e-3):.3f}".rstrip('0').rstrip('.')+' y0='+f"{(y0/1e-3):.3f}".rstrip('0').rstrip('.')+'.hdf5'),'w') as f:
             print(f)
             f.create_dataset('Type', data=field_names[i])
             f.create_dataset('f', data=freqs[i])
@@ -227,88 +227,57 @@ def save_hd5_1d(efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, f
             f.create_dataset('yGrad', data=y_grads[i])
 
 
+def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version=2019):
+    if not os.path.exists(hd5BasePath):
+        os.mkdir(hd5BasePath)
+
+    hd5path = os.path.join(hd5BasePath, sProjectName[:-4])
+    if not os.path.exists(hd5path):
+        os.mkdir(hd5path)
+    else:
+        if os.listdir(hd5path):  # returns True if there are files in the directory
+            # print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
+            return 1
+
+    efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
+                        load_fields(CST_version, sProjectPath, sProjectName, freqScale)
+    z_comps, x_grads, y_grads, x0, y0 = slice_1d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, x0, y0)
+    save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, field_names, freq_names, freqs, x0, y0)
+    return 0
 
 
-if __name__ == "__main__":
-    
-    import time
-    import datetime
-    # erstelle hd5 files 
-    # -für sämtliche cst files im aktuellen Ordner
-    # -oder für eine manuell erstellte Liste von cst-files im aktuellen Ordner
-    # 2017 02 28 BB
-    
-    # The following Python script shows the basic usage of the CSTResultResder.dll
-    # and converts some project result data into HDF5 format using the h5py library.
-    #
-
-
- #   now = datetime.datetime.now()
- #   print(str(now))
- #   
- #   # starte Skript in x Tagen
- #   sleep_tage = 0
- #   print("Schlafe fuer {:g} Tage.".format(sleep_tage))
- #   time.sleep(sleep_tage*86400)
- #   print('wakeup!')
-
-
-    CST_version = 2019
-
-    #sProjectPath = os.path.abspath('.') + r'\\'
-    sProjectPath = r"C:\\temp\\cstdemo" + r'\\'
-
-    # automatische Liste
+def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=2019):
     project_names = []
     for file in os.listdir(sProjectPath):
         if file.endswith(".cst"):
             project_names.append(file)
     print(project_names)
-    # manuelle Liste
-    # project_names=["erstes.cst", "zweites.cst", "drittes.cst"]
 
-    #sProjectPath = r'D:\CST\Bernd\2017 02 20 Dubna\\'
-    #sProjectName = 'dubna-ceramicPipe-trans.cst'
-    freqScale = 1e9
-    x0 = 0
-    y0 = 0
-
-    
-    ##########################################################################
-    hd5BasePath = os.path.join(sProjectPath[:-1], 'hd5')
-
+    hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
-
     for sProjectName in project_names:
-        print("\n\n\n\n#####################################")
+        print("\n\n\n\n")
+        print("#####################################")
         print("####", sProjectName)
         print("#####################################")
         t = time.time()
-
-
-        hd5path = os.path.join(hd5BasePath, sProjectName[:-4])
-        if not os.path.exists(hd5path):
-            os.mkdir(hd5path)
-        else:
-            #if os.listdir(hd5path):  # returns True if there are files in the directory
-            print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
-            continue
-
-        efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
-                            load_fields(CST_version, sProjectPath, sProjectName, freqScale)
-        
-        z_comps, x_grads, y_grads, x0, y0 = slice_1d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, x0, y0)
-
-        save_hd5_3d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs)
-
-        save_hd5_1d(efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, field_names, freq_names, freqs, x0, y0)
-
-
-
-    
+        retval = project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version)
+        if retval ==1:
+            print('hd5-files already exist!')
         elapsed = numpy.round(time.time() - t)
         print('elapsed time: '+str(elapsed))
-        
-        time.sleep(5) # -> vielleicht hilft das bei Abstuerzen.
+
+
+if __name__ == "__main__":
+
+    CST_version = 2019
+    sProjectPath = os.path.abspath('.') + r"\\cstdemo\\"
+    freqScale = 1e9
+    x0 = 0
+    y0 = 0
+    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, 'hd5', CST_version)
+
+
+
