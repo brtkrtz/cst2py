@@ -1,0 +1,196 @@
+28/Mar/2019 11:20:14  *** Warning ***
+                      
+                      The monitor loss (f=1) is only available for dielectric or magnetic losses and
+                      will be ignored.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:14  *** Warning ***
+                      
+                      The monitor loss (f=0.5) is only available for dielectric or magnetic losses
+                      and will be ignored.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:14  *** Warning ***
+                      
+                      The monitor loss (f=0.2) is only available for dielectric or magnetic losses
+                      and will be ignored.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:14  *** Error ***
+                      
+                      Farfield monitors are not supported with pec, dispersive, lossy or surface
+                      impedance as background material.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:34  *** Warning ***
+                      
+                      The monitor loss (f=1) is only available for dielectric or magnetic losses and
+                      will be ignored.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:34  *** Warning ***
+                      
+                      The monitor loss (f=0.5) is only available for dielectric or magnetic losses
+                      and will be ignored.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:34  *** Warning ***
+                      
+                      The monitor loss (f=0.2) is only available for dielectric or magnetic losses
+                      and will be ignored.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:36  
+                      Solver started at: 11:20 AM Thursday, 28. March 2019 (Mitteleuropäische Zeit)
+                      
+                        Module:  Time Domain: S-Parameter (Win 64)
+                        Version: 2019.4 Release from 2019-03-01 (change 672343)
+                      
+
+                      ------------------------------------------------------------------------------
+
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:36  ======================================================================
+                       Solver cycle: 1
+                      ======================================================================
+                      
+                      Stimulation at discrete port 1 
+                      
+                      
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:36  Units settings: 
+                      
+                        Dimensions: mm
+                        Frequency:  GHz
+                        Time:       ns
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:44  The following discrete edge ports are connected to metal material:
+                      	1, 2
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:45  Mesh statistics:
+                      
+                         Hexahedral mesh type: PBA [Version: default]
+                      
+                         Parallelization type: domain decomposition
+                            Number of parallel working threads: 1
+                            Number of calculation domains used: 1
+                      
+                         Used point accuracy enhancement value: 75.00%.
+                         PBA fill limit: 99.00% (inverse)
+
+28/Mar/2019 11:20:45  Boundary conditions: 
+                      
+                        YZsymmetry: none
+                        XZsymmetry: none
+                        XYsymmetry: none
+                      
+                        Xmin: electric
+                        Xmax: electric
+                      
+                        Ymin: electric
+                        Ymax: electric
+                      
+                        Zmin: electric
+                        Zmax: electric
+                      
+                        PML-Type: ---
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:45  Frequency settings: 
+                      
+                        Fmin:         0
+                        Fmax:         1
+                        Nfsteps(lin): 1001
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:45  Port: 1
+                      
+28/Mar/2019 11:20:45    Discrete element, reference impedance = 50 Ohm
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:45  Port: 2
+                      
+28/Mar/2019 11:20:45    Discrete element, reference impedance = 50 Ohm
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:45  Field update statistics:
+                      
+                        Number of components in total: 	11081
+                      
+                      Subcycling state:      Automatically deactivated
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  
+                      --------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  Steady state energy criterion met, solver finished successfully.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  Frequency domain results normalized to default signal.
+                      
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  
+                        ----------------------------------------------------------------------------
+                                            Peak memory used (kB)         Free physical memory (kB) 
+                                                                          At begin     Minimum      
+                        ----------------------------------------------------------------------------
+                        CAD preparation     22480                         8099256      8099256      
+                        Matrices calc.      34179                         8086914      8057617      
+                        Solver run total    23632                         8142096      8062644      
+                        ----------------------------------------------------------------------------
+                      
+                      --------------------------------------------------------------------------------
+                      Solver Statistics:
+                      
+                        Hardware:
+                           Computer name:                 	IKP087 
+                      
+                           Number of CPU threads:               2
+                           Hardware info:                  	Hardware Accelerator Device not activated
+                      
+                        Number of mesh cells:             	1584
+                        Excitation duration:              	3.55454875e+000 ns 
+                        Calculation time for excitation:  	0 	s
+                        Number of calculated pulse widths:	2.15469 
+                        Steady state accuracy limit:      	-40	dB 
+                        Simulated number of time steps:   	690 
+                        Maximum number of time steps:     	6404 
+                        Time step width:
+                           without subcycles:             	1.10999313e-002 ns
+                           used:                          	1.10999313e-002 ns
+                      
+                        CAD preparation time:             	0      	s
+                        Matrix calculation time:          	8 	s
+                        Solver setup time:                	0 	s
+                        Solver loop time:                 	0 	s
+                        Solver post processing time:      	0 	s
+                                                          	------------
+                        Total solver time:                	8 	s
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  ======================================================================
+                       TD-Solver detected a unitary device (two-port reciprocity).
+                       S-parameters of the second run will be calculated from
+                       the results of the first run.
+                      ======================================================================
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  Any monitor or probe results are not considered by two-port reciprocity.
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  
+                        Adaptive port meshing time:          	0      	s
+                        Total solver time (all cycles):      	8      	s
+                        solver initialization and clean-up:  	2      	s
+                                                             	------------
+                        Total simulation time:               	10     	s
+                      
+                      ------------------------------------------------------------------------------
+28/Mar/2019 11:20:46  Solver finished at: 11:20 AM Thursday, 28. March 2019
+                      
+                      
+                      
+                      ------------------------------------------------------------------------------

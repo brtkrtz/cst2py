@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SchematicTopology Version="2.3" Seed="1" Grid="25">
+    <BasePath>C:/temp/cstdemo/cstdemo/Model/DS</BasePath>
+    <Block ForeignId="61501405" Id="1" Class="MWSSCHEM">
+        <Size Height="150" Width="150"/>
+        <Pins>
+            <Pin X="-75" Y="0" Index="0" BlockPosition="Left">
+                <Label>1</Label>
+            </Pin>
+            <Pin X="75" Y="0" Index="0" BlockPosition="Right">
+                <Label>2</Label>
+            </Pin>
+        </Pins>
+        <Image Scale="AutoFit" FileName="../3D/Model.dib">
+            <Size Height="392" Width="512"/>
+        </Image>
+        <Pos X="75" Y="75"/>
+        <ToolTip>CST MICROWAVE STUDIO schematic block MWSSCHEM1</ToolTip>
+    </Block>
+</SchematicTopology>

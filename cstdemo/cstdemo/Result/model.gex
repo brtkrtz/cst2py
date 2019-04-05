@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MetaGeometryFile creator="MatrixCalc" version="20170926">
+  <Components>
+    <Shape name="Components\component1:solid1" id="1" visible="1" material="Vacuum" line_material="">
+      <MeshGroup0D list=""/>
+      <MeshGroup1D list=""/>
+      <MeshGroup2D>
+        <Pos list="1 2 3 4 5 6"/>
+        <Neg list=""/>
+        <DS list=""/>
+      </MeshGroup2D>
+      <MeshGroup3D list=""/>
+    </Shape>
+    <Shape name="Components\component1:solid2" id="2" visible="1" material="PEC" line_material="">
+      <MeshGroup0D list=""/>
+      <MeshGroup1D list=""/>
+      <MeshGroup2D>
+        <Pos list="7 8 9"/>
+        <Neg list=""/>
+        <DS list=""/>
+      </MeshGroup2D>
+      <MeshGroup3D list=""/>
+    </Shape>
+  </Components>
+  <SimulationDomain min="-15 -20 -300" max="35 40 200"/>
+  <Materials>
+    <Material name="Vacuum" priority="1">
+      <Drawstyle color="1 1 1" linestrength="1" transparency="0"/>
+    </Material>
+    <Material name="PEC" priority="1">
+      <Drawstyle color="1 1 1" linestrength="1" transparency="0"/>
+    </Material>
+  </Materials>
+  <GeometryFile filename="3d.slm" type="slim" subdomain_id=""/>
+  <MeshType type="HEX"/>
+  <Groups/>
+  <HexMesh>
+    <Dimensions nx="7" ny="9" nz="34"/>
+    <MeshPlanesX values="-15 -5 5 15 20 25 35"/>
+    <MeshPlanesY values="-20 -10.03537671977 -1.690251146512 6.654874426744 15 20 25 32.5 40"/>
+    <MeshPlanesZ values="-300 -284.3743413473 -268.7486826946 -256.5402989893 -247.6935326595 -238.8467663298 -230 -220.1093710837 -210.2187421675 -200.3281132512 -182.075152852 -162.5251293363 -142.9751058206 -123.4250823049 -103.8750587892 -84.32503527354 -64.77501175785 -45.22498824215 -25.67496472646 -6.124941210762 13.42508230493 32.97510582063 52.52512933632 72.07515285202 90.32811325122 100.2187421675 110.1093710837 120 129.488067459 138.9761349181 148.4642023771 164.1385337895 182.0692668948 200"/>
+  </HexMesh>
+</MetaGeometryFile>
