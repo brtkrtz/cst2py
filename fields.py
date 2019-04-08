@@ -212,7 +212,7 @@ def save_hd5_3d(hd5path, efield_names, hfield_names, xlines, ylines, zlines, fie
 
 def save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, field_names, freq_names, freqs, x0, y0):  
     for i, sTreePath in enumerate(efield_names + hfield_names):#f"{(x0/1e-3):.3f}".rstrip('0').rstrip('.')    str(y0/1e-3)
-        with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+' x0='+f"{(x0/1e-3):.3f}".rstrip('0').rstrip('.')+' y0='+f"{(y0/1e-3):.3f}".rstrip('0').rstrip('.')+'.hdf5'),'w') as f:
+        with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+' x0='+f"{(x0):.4f}".rstrip('0').rstrip('.')+' y0='+f"{(y0):.4f}".rstrip('0').rstrip('.')+'.hdf5'),'w') as f:
             print(f)
             f.create_dataset('Type', data=[numpy.string_(field_names[i])])
             f.create_dataset('f', data=[freqs[i]])
