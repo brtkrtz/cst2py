@@ -14,6 +14,7 @@ C:/Program Files (x86)/CST STUDIO SUITE 2018/Online Help/advanced/resultreadingd
 
 
 import os
+import shutil
 import ctypes
 import _ctypes # freelibrary, to reuse dll for different projects
 import winreg
@@ -31,37 +32,33 @@ def _get_CST_InstallPath(CST_version):
     sUniCode = winreg.QueryValueEx(rkey, "INSTALLPATH")[0]
     return sUniCode
 
+
 def _get_CST_result_reader_path(CST_version, verbose=False):
     install_path = _get_CST_InstallPath(CST_version)
     if verbose: print("CST install path:  %s" % install_path)
     bitness, os_name = platform.architecture()
     if verbose: print("OS name:  %s, OS bitness: %s" % os_name, bitness)
-
     if bitness.startswith("64"):
         install_path = os.path.join(install_path,  u"AMD64")
         dll_name = u"CSTResultReader_AMD64.dll"
     else:
         dll_name = u"CSTResultReader.dll"
-
     os.chdir(install_path) # We need to change to the DLL path to find other required DLLs
     if verbose: print("Changed dir to %s" % os.getcwd())
-
     return os.path.join(install_path, dll_name)
+
 
 def _load_CST_result_reader_dll(CST_version, verbose=False):
     dll_path = _get_CST_result_reader_path(CST_version)
-
     if verbose: print("Trying to load dll from", dll_path)
-    
     if not os.path.exists(dll_path):
         sys.exit("Could not find ResultReader dll at "+dll_path)
-
     cstlib = ctypes.WinDLL(dll_path)
     iVersion = ctypes.c_int()
     cstlib.CST_GetDLLVersion(ctypes.byref(iVersion))
     if verbose: print("DLL version:", iVersion)
-
     return cstlib
+
 
 def _get_item_names(pHandle, cstlib, search_string):
     ERROR_CODE_MEMORY = 8
@@ -82,6 +79,7 @@ def _get_item_names(pHandle, cstlib, search_string):
     item_list = discovered_str.value.split(b"\n")
     return item_list
 
+
 def _check_array(Matrix, dExpectedSum, sName):
     dSum = 0
     for x in Matrix:
@@ -90,7 +88,6 @@ def _check_array(Matrix, dExpectedSum, sName):
     if not bOK:
         print("Error: Something might be wrong with reading ", sName)
     return bOK
-
 
 
 def load_fields(CST_version, sProjectPath, sProjectName, freqScale, verbose=False):
@@ -170,6 +167,7 @@ def load_fields(CST_version, sProjectPath, sProjectName, freqScale, verbose=Fals
     _ctypes.FreeLibrary(cstlib._handle)
     return efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs
 
+
 def slice_1d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, x0, y0):  
     Np = len(xlines)*len(ylines)*len(zlines)
     # x0, y0 in xlines, ylines nachschlagen -> ix, iy
@@ -200,7 +198,6 @@ def slice_1d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, x0, y
     return z_comps, x_grads, y_grads, x0, y0
 
 
-####
 def save_hd5_3d(hd5path, efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs): 
     for i, sTreePath in enumerate(efield_names + hfield_names):
         with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+'.hdf5'),'w') as f:
@@ -227,7 +224,7 @@ def save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y
             f.create_dataset('yGrad', data=y_grads[i])
 
 
-def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version=2019):
+def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version=2019, force_overwrite=False):
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
@@ -236,8 +233,12 @@ def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_
         os.mkdir(hd5path)
     else:
         if os.listdir(hd5path):  # returns True if there are files in the directory
-            # print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
-            return 1
+            if force_overwrite:
+                shutil.rmtree(hd5path)
+                os.mkdir(hd5path)
+            else:
+                # print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
+                return 1
 
     efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
                         load_fields(CST_version, sProjectPath, sProjectName, freqScale)
@@ -245,12 +246,12 @@ def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_
     return 0
 
 
-def all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5', CST_version=2019):
+def all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5', CST_version=2019, force_overwrite=False):
     project_names = []
     for file in os.listdir(sProjectPath):
         if file.endswith(".cst"):
             project_names.append(file)
-    print(project_names)
+    print('\n\n\n3D export. Found projects:', project_names)
 
     hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
@@ -262,14 +263,14 @@ def all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5', CST_vers
         print("####", sProjectName)
         print("#####################################")
         t = time.time()
-        retval = project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version)
+        retval = project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version, force_overwrite)
         if retval ==1:
             print('hd5-files already exist!')
         elapsed = numpy.round(time.time() - t)
         print('elapsed time: '+str(elapsed))
 
 
-def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version=2019):
+def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version=2019, force_overwrite=False):
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
@@ -278,8 +279,12 @@ def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqSca
         os.mkdir(hd5path)
     else:
         if os.listdir(hd5path):  # returns True if there are files in the directory
-            # print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
-            return 1
+            if force_overwrite:
+                shutil.rmtree(hd5path)
+                os.mkdir(hd5path)
+            else:
+                # print('hd5-files already exist for project ' + sProjectName + ' -> Skipping')
+                return 1
 
     efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
                         load_fields(CST_version, sProjectPath, sProjectName, freqScale)
@@ -288,12 +293,12 @@ def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqSca
     return 0
 
 
-def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=2019):
+def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=2019, force_overwrite=False):
     project_names = []
     for file in os.listdir(sProjectPath):
         if file.endswith(".cst"):
             project_names.append(file)
-    print(project_names)
+    print('\n\n\n1D export. Found projects:', project_names)
 
     hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
@@ -305,7 +310,7 @@ def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', 
         print("####", sProjectName)
         print("#####################################")
         t = time.time()
-        retval = project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version)
+        retval = project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version, force_overwrite)
         if retval ==1:
             print('hd5-files already exist!')
         elapsed = numpy.round(time.time() - t)
@@ -318,8 +323,6 @@ if __name__ == "__main__":
     freqScale = 1e9
     x0 = 0
     y0 = 0
-    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, 'hd5', CST_version)
-    all_projects_to_3d_files(sProjectPath, freqScale, 'hd5_3d', CST_version)
-
-
+    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, 'hd5', CST_version, force_overwrite=True)
+    all_projects_to_3d_files(sProjectPath, freqScale, 'hd5_3d', CST_version, force_overwrite=True)
 
