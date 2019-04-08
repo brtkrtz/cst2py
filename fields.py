@@ -202,8 +202,8 @@ def save_hd5_3d(hd5path, efield_names, hfield_names, xlines, ylines, zlines, fie
     for i, sTreePath in enumerate(efield_names + hfield_names):
         with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+'.hdf5'),'w') as f:
             print(f)
-            f.create_dataset('Type', data=field_names[i])
-            f.create_dataset('f', data=freqs[i])
+            f.create_dataset('Type', data=[numpy.string_(field_names[i])])
+            f.create_dataset('f', data=[freqs[i]])
             f.create_dataset('x', data=xlines)
             f.create_dataset('y', data=ylines)
             f.create_dataset('z', data=zlines)
@@ -214,14 +214,15 @@ def save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y
     for i, sTreePath in enumerate(efield_names + hfield_names):#f"{(x0/1e-3):.3f}".rstrip('0').rstrip('.')    str(y0/1e-3)
         with h5py.File(os.path.join(hd5path, field_names[i]+' '+freq_names[i]+' x0='+f"{(x0/1e-3):.3f}".rstrip('0').rstrip('.')+' y0='+f"{(y0/1e-3):.3f}".rstrip('0').rstrip('.')+'.hdf5'),'w') as f:
             print(f)
-            f.create_dataset('Type', data=field_names[i])
-            f.create_dataset('f', data=freqs[i])
-            f.create_dataset('x0', data=x0)
-            f.create_dataset('y0', data=y0)
+            f.create_dataset('Type', data=[numpy.string_(field_names[i])])
+            f.create_dataset('f', data=[freqs[i]])
+            f.create_dataset('x0', data=[x0])
+            f.create_dataset('y0', data=[y0])
             f.create_dataset('z', data=zlines)
             f.create_dataset('zComp', data=z_comps[i])
             f.create_dataset('xGrad', data=x_grads[i])
             f.create_dataset('yGrad', data=y_grads[i])
+            print(field_names[i], numpy.array(freqs[i]))
 
 
 def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version=2019, force_overwrite=False):
