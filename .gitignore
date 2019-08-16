@@ -2,6 +2,5 @@
 .ipynb*
 cstdemo/hd5*
 cstdemo/cstdemo_dense
-cstdemo/cstdemo_dense.cst
 cst_curves_development.ipynb
 cst_import_development.ipynb
