@@ -247,12 +247,12 @@ def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_
     return 0
 
 
-def all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5', CST_version=2019, force_overwrite=False):
-    project_names = []
-    for file in os.listdir(sProjectPath):
-        if file.endswith(".cst"):
-            project_names.append(file)
-    print('\n\n\n3D export. Found projects:', project_names)
+def all_projects_to_3d_files(sProjectPath, freqScale, project_names = [], hd5_folder='hd5', CST_version=2019, force_overwrite=False):
+    if not project_names:
+        for file in os.listdir(sProjectPath):
+            if file.endswith(".cst"):
+                project_names.append(file)
+        print('\n\n\n1D export. Found projects:', project_names)
 
     hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
@@ -294,12 +294,12 @@ def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqSca
     return 0
 
 
-def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=2019, force_overwrite=False):
-    project_names = []
-    for file in os.listdir(sProjectPath):
-        if file.endswith(".cst"):
-            project_names.append(file)
-    print('\n\n\n1D export. Found projects:', project_names)
+def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, project_names = [], hd5_folder='hd5', CST_version=2019, force_overwrite=False):
+    if not project_names:
+        for file in os.listdir(sProjectPath):
+            if file.endswith(".cst"):
+                project_names.append(file)
+        print('\n\n\n1D export. Found projects:', project_names)
 
     hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
