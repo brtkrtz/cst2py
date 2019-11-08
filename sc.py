@@ -202,9 +202,9 @@ def kickerLong(Ez, z, f, Pin_eff, beta, z_borders=[0, 0], Zc=50):
     in the right hand side beam pipe. 
     Thus, the correct values are e.g. K(f)=K[:,-1]
    
-    Formulas are from Glen Lambertson: 'Dynamic Devices -Pickups and
-    Kickers', AIP Conference Proceedings 153, Vol. 2, 1987, DOI:
-    10.1063/1.36380
+    Formulas are from D.A. Goldberg and G.R. Lambertson: 'Dynamic Devices A Primer on Pickups and
+    Kickers', AIP Conference Proceedings 249, vol 1 537-600, 1992,
+    DOI: 10.1063/1.41979
     
     Args:
         Ez: Normal component of electric field. 
@@ -291,9 +291,9 @@ def kickerTrans(dEz_du, z, f, Pin_eff, beta, z_borders=[0, 0], Zc=50, extra_valu
     in the right hand side beam pipe. 
     Thus, the correct values are e.g. K(f)=K[:,-1]
     
-    Formulas are from Glen Lambertson: 'Dynamic Devices -Pickups and
-    Kickers', AIP Conference Proceedings 153, Vol. 2, 1987, DOI:
-    10.1063/1.36380
+    Formulas are from D.A. Goldberg and G.R. Lambertson: 'Dynamic Devices A Primer on Pickups and
+    Kickers', AIP Conference Proceedings 249, vol 1 537-600, 1992,
+    DOI: 10.1063/1.41979
     
     Args:
         dEz_du: Transverse gradient of normal component of electric field. 
