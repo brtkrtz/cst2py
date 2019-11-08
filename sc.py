@@ -307,7 +307,9 @@ def kickerTrans(dEz_du, z, f, Pin_eff, beta, z_borders=[0, 0], Zc=50, extra_valu
         extra_values: Will present additional parameters. Not Implemented yet.
     
     Returns:
-        Ru_shunt: Ru|T|^2, transverse shunt impedance for the given beta
+        Ru_shunt: Ru|T|^2, transverse shunt impedance for the given beta. Dimension 
+		    of Ru_shunt is ohms! According to Goldberg/Lambertson (the sentence following (4.11)),
+			a common definition for impedance with respect to displacement is Ru_shunt*k0 -> ohms/m.
             $$R_uT=Z_c |K_u|^2$$
         Ku: Transverse kicker constant, i.e. beam kick induced by 1 volt at the terminal. 
             $$K_u=-\frac{1}{jk_B}\frac{\partial K'_{||}}{\partial u}$$
