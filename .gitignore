@@ -4,3 +4,4 @@ cstdemo/hd5*
 cstdemo/cstdemo_dense
 cst_curves_development.ipynb
 cst_import_development.ipynb
+__pycache__/
