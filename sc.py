@@ -308,7 +308,7 @@ def kickerTrans(dEz_du, z, f, Pin_eff, beta, z_borders=[0, 0], Zc=50, extra_valu
     
     Returns:
         Ru_shunt: Ru|T|^2, transverse shunt impedance for the given beta
-            $$R_uT^2=Z_c |K_u|^2$$
+            $$R_uT=Z_c |K_u|^2$$
         Ku: Transverse kicker constant, i.e. beam kick induced by 1 volt at the terminal. 
             $$K_u=-\frac{1}{jk_B}\frac{\partial K'_{||}}{\partial u}$$
             with
