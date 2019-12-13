@@ -24,7 +24,6 @@ import h5py
 import numpy
 import re
 import time
-import datetime
 
 def _get_CST_InstallPath(CST_version):
     wr_handle = winreg.ConnectRegistry(None, winreg.HKEY_LOCAL_MACHINE)
@@ -225,7 +224,7 @@ def save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y
             print(field_names[i], numpy.array(freqs[i]))
 
 
-def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version=2019, force_overwrite=False):
+def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version=2019, force_overwrite=False, verbose=False):
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
@@ -242,36 +241,37 @@ def project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_
                 return 1
 
     efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
-                        load_fields(CST_version, sProjectPath, sProjectName, freqScale)
+                        load_fields(CST_version, sProjectPath, sProjectName, freqScale, verbose)
     save_hd5_3d(hd5path, efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs)
     return 0
 
 
-def all_projects_to_3d_files(sProjectPath, freqScale, project_names = [], hd5_folder='hd5', CST_version=2019, force_overwrite=False):
+def all_projects_to_3d_files(sProjectPath, freqScale, project_names = [], hd5_folder='hd5', CST_version=2019, force_overwrite=False, verbose=False):
     if not project_names:
         for file in os.listdir(sProjectPath):
             if file.endswith(".cst"):
                 project_names.append(file)
-        print('\n\n\n1D export. Found projects:', project_names)
+        print("\n\n\n########################################################")
+        print('3D-export of all projects in folder. Found projects:', project_names)
 
     hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
     for sProjectName in project_names:
-        print("\n\n\n\n")
+        print("\n\n")
         print("#####################################")
         print("####", sProjectName)
         print("#####################################")
         t = time.time()
-        retval = project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version, force_overwrite)
+        retval = project_to_3d_files(sProjectPath, sProjectName, hd5BasePath, freqScale, CST_version, force_overwrite, verbose)
         if retval ==1:
             print('hd5-files already exist!')
         elapsed = numpy.round(time.time() - t)
         print('elapsed time: '+str(elapsed))
 
 
-def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version=2019, force_overwrite=False):
+def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version=2019, force_overwrite=False, verbose=False):
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
@@ -288,30 +288,31 @@ def project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqSca
                 return 1
 
     efield_names, hfield_names, xlines, ylines, zlines, fields3d, field_names, freq_names, freqs = \
-                        load_fields(CST_version, sProjectPath, sProjectName, freqScale)
+                        load_fields(CST_version, sProjectPath, sProjectName, freqScale, verbose)
     z_comps, x_grads, y_grads, x0, y0 = slice_1d(efield_names, hfield_names, xlines, ylines, zlines, fields3d, x0, y0)
     save_hd5_1d(hd5path, efield_names, hfield_names, zlines, z_comps, x_grads, y_grads, field_names, freq_names, freqs, x0, y0)
     return 0
 
 
-def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, project_names = [], hd5_folder='hd5', CST_version=2019, force_overwrite=False):
+def all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, project_names = [], hd5_folder='hd5', CST_version=2019, force_overwrite=False, verbose=False):
     if not project_names:
         for file in os.listdir(sProjectPath):
             if file.endswith(".cst"):
                 project_names.append(file)
-        print('\n\n\n1D export. Found projects:', project_names)
+        print("\n\n\n########################################################")
+        print('1D-export of all projects in Folder. Found projects:', project_names)
 
     hd5BasePath = os.path.join(sProjectPath[:-1], hd5_folder)
     if not os.path.exists(hd5BasePath):
         os.mkdir(hd5BasePath)
 
     for sProjectName in project_names:
-        print("\n\n\n\n")
+        print("\n\n")
         print("#####################################")
         print("####", sProjectName)
         print("#####################################")
         t = time.time()
-        retval = project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version, force_overwrite)
+        retval = project_to_1d_files(sProjectPath, sProjectName, hd5BasePath, x0, y0, freqScale, CST_version, force_overwrite, verbose)
         if retval ==1:
             print('hd5-files already exist!')
         elapsed = numpy.round(time.time() - t)
@@ -324,5 +325,5 @@ if __name__ == "__main__":
     freqScale = 1e9
     x0 = 0
     y0 = 0
-    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=CST_version, force_overwrite=True)
-    all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5_3d', CST_version=CST_version, force_overwrite=True)
+    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=CST_version, force_overwrite=True, verbose=True)
+    all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5_3d', CST_version=CST_version, force_overwrite=True, verbose=True)
