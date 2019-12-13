@@ -324,6 +324,5 @@ if __name__ == "__main__":
     freqScale = 1e9
     x0 = 0
     y0 = 0
-    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, 'hd5', CST_version, force_overwrite=True)
-    all_projects_to_3d_files(sProjectPath, freqScale, 'hd5_3d', CST_version, force_overwrite=True)
-
+    all_projects_to_1d_files(sProjectPath, x0, y0, freqScale, hd5_folder='hd5', CST_version=CST_version, force_overwrite=True)
+    all_projects_to_3d_files(sProjectPath, freqScale, hd5_folder='hd5_3d', CST_version=CST_version, force_overwrite=True)
